@@ -4,6 +4,10 @@ const express = require("express");
 const cookieParser = require("cookie-parser");
 const cors = require("cors");
 const userRoutes = require("./routes/user.routes");
+const carouselRoutes = require("./routes/carousel.routes");
+const productRoutes = require("./routes/product.routes");
+const path = require("path");
+const { checkUser, getToken } = require("./middleware/auth.middleware");
 
 const app = express();
 
@@ -20,7 +24,16 @@ const corsOptions = {
 };
 app.use(cors(corsOptions));
 
+//vérif token
+app.get("/jwtid", checkUser, getToken, (req, res) => {
+  res.status(200).send({ userId: res.locals.user._id });
+});
+
 app.use("/api/user", userRoutes);
+app.use("/api/products", productRoutes);
+app.use("/api/carousel", carouselRoutes);
+
+app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 
 // server
 app.listen(process.env.PORT, () => {

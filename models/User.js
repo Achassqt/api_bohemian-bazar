@@ -4,7 +4,7 @@ const bcrypt = require("bcrypt");
 const userSchema = new mongoose.Schema({
   pseudo: {
     type: String,
-    require: true,
+    required: true,
     minlenght: 3,
     maxlenght: 20,
     trim: true,
@@ -12,7 +12,7 @@ const userSchema = new mongoose.Schema({
 
   password: {
     type: String,
-    require: true,
+    required: true,
     minlenght: 6,
   },
 });
@@ -30,9 +30,9 @@ userSchema.statics.login = async function (pseudo, password) {
     if (auth) {
       return user;
     }
-    throw Error("password incorrect");
+    throw new Error("password incorrect");
   }
-  throw Error("email incorrect");
+  throw new Error("pseudo incorrect");
 };
 
 module.exports = mongoose.model("User", userSchema);
