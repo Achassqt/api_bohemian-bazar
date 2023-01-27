@@ -8,6 +8,7 @@ const carouselRoutes = require("./routes/carousel.routes");
 const productRoutes = require("./routes/product.routes");
 const path = require("path");
 const { checkUser, getToken } = require("./middleware/auth.middleware");
+const serverless = require("serverless-http");
 
 const app = express();
 
@@ -36,6 +37,8 @@ app.use("/api/carousel", carouselRoutes);
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 
 // server
-app.listen(process.env.PORT, () => {
-  console.log(`Listening on port ${process.env.PORT}`);
-});
+// app.listen(process.env.PORT, () => {
+//   console.log(`Listening on port ${process.env.PORT}`);
+// });
+
+module.exports.handler = serverless(app);
