@@ -1,17 +1,32 @@
 const Product = require("../models/Product");
 const fs = require("fs");
+const { newProductsErrors } = require("../utils/errors.utils");
 
 exports.uploadProduct = async (req, res) => {
+  // convertir les données de tailles en tableau JSON
+  let sizes = [];
+  if (req.body.sizes) {
+    try {
+      sizes = JSON.parse(req.body.sizes);
+    } catch (err) {
+      return res.status(400).json({
+        error:
+          "Les tailles doivent être envoyées sous forme de tableau JSON valide",
+      });
+    }
+  }
   const newProduct = new Product(
     req.file
       ? {
           ...req.body,
+          sizes: sizes,
           imageUrl: `${req.protocol}://${req.get(
             "host"
           )}/uploads/images/products/${req.file.filename}`,
         }
       : {
           ...req.body,
+          sizes: sizes,
         }
   );
 
@@ -57,9 +72,9 @@ exports.deleteProduct = (req, res) => {
 };
 
 exports.updateProduct = (req, res) => {
-  if (res.locals.user === null && res.locals.user.pseudo !== "admin") {
-    return res.status(401).json({ error: "Non autorisé" });
-  }
+  // if (res.locals.user === null) {
+  //   return res.status(401).json({ error: "Non autorisé" });
+  // }
 
   Product.findOne({ _id: req.params.id }).then((product) => {
     if (req.file && product.imageUrl !== undefined) {
