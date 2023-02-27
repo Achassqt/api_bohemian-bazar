@@ -49,6 +49,12 @@ exports.getProducts = (req, res) => {
   });
 };
 
+exports.getProduct = (req, res) => {
+  Product.findOne({ _id: req.params.id })
+    .then((product) => res.status(200).json(product))
+    .catch((err) => res.status(404).json({ err }));
+};
+
 exports.deleteProduct = (req, res) => {
   if (res.locals.user === null) res.status(401).json({ error: "Non autorisé" });
 

@@ -18,8 +18,16 @@ const productSchema = new mongoose.Schema({
     required: true,
   },
   display: {
-    type: String,
+    type: Boolean,
     default: "false",
+  },
+  ranking: {
+    type: Number,
+    required: false,
+  },
+  rankingInList: {
+    type: Number,
+    required: false,
   },
   price: {
     type: Number,
@@ -34,6 +42,13 @@ const productSchema = new mongoose.Schema({
   quantity: {
     type: Number,
   },
+});
+
+productSchema.pre("save", function (next) {
+  if (!this.display) {
+    this.ranking = undefined;
+  }
+  next();
 });
 
 module.exports = mongoose.model("Product", productSchema);

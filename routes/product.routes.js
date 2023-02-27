@@ -6,6 +6,7 @@ const { checkUser } = require("../middleware/auth.middleware");
 
 router.post("/", checkUser, multerProduct, productCtrl.uploadProduct);
 router.get("/", productCtrl.getProducts);
+router.get("/:id", productCtrl.getProduct);
 router.delete("/:id", checkUser, productCtrl.deleteProduct);
 router.put("/:id", checkUser, multerProduct, productCtrl.updateProduct);
 
