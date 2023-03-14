@@ -92,15 +92,29 @@ exports.updateProduct = (req, res) => {
       });
     }
 
+    let sizes = [];
+    if (req.body.sizes) {
+      try {
+        sizes = JSON.parse(req.body.sizes);
+      } catch (err) {
+        return res.status(400).json({
+          error:
+            "Les tailles doivent être envoyées sous forme de tableau JSON valide",
+        });
+      }
+    }
+
     const productObject = req.file
       ? {
           ...req.body,
+          sizes: sizes,
           imageUrl: `${req.protocol}://${req.get(
             "host"
           )}/uploads/images/products/${req.file.filename}`,
         }
       : {
           ...req.body,
+          sizes: sizes,
         };
 
     Product.findOneAndUpdate(
