@@ -34,6 +34,7 @@ app.use("/api/products", productRoutes);
 app.use("/api/carousel", carouselRoutes);
 
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));
+app.use("/mnt/myuploads", express.static("/mnt/myuploads"));
 
 // server
 app.listen(process.env.PORT, () => {
