@@ -1,9 +1,13 @@
 const CarouselImage = require("../models/CarouselImage");
 const fs = require("fs");
 
+const uploadsPath = process.env.UPLOADS_DIR.startsWith("/")
+  ? process.env.UPLOADS_DIR
+  : `/${process.env.UPLOADS_DIR}`;
+
 exports.uploadImage = async (req, res) => {
   const newImage = new CarouselImage({
-    imageUrl: `${req.protocol}://${req.get("host")}/uploads/images/carousel/${
+    imageUrl: `${req.protocol}://${req.get("host")}${uploadsPath}/${
       req.file.filename
     }`,
   });
@@ -32,8 +36,8 @@ exports.deleteImage = (req, res) => {
 
   CarouselImage.findOne({ _id: req.params.id })
     .then((image) => {
-      const filename = image.imageUrl.split("/uploads/images/carousel")[1];
-      fs.unlink(`uploads/images/carousel/${filename}`, (err) => {
+      const filename = image.imageUrl.split(uploadsPath)[1];
+      fs.unlink(`${process.env.UPLOADS_DIR}/${filename}`, (err) => {
         if (err) throw err;
       });
       CarouselImage.findByIdAndRemove(req.params.id, (err, docs) => {

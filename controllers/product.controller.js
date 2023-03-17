@@ -2,6 +2,10 @@ const Product = require("../models/Product");
 const fs = require("fs");
 const { newProductsErrors } = require("../utils/errors.utils");
 
+const uploadsPath = process.env.UPLOADS_DIR.startsWith("/")
+  ? process.env.UPLOADS_DIR
+  : `/${process.env.UPLOADS_DIR}`;
+
 exports.uploadProduct = async (req, res) => {
   // convertir les données de tailles en tableau JSON
   let sizes = [];
@@ -20,9 +24,9 @@ exports.uploadProduct = async (req, res) => {
       ? {
           ...req.body,
           sizes: sizes,
-          imageUrl: `${req.protocol}://${req.get(
-            "host"
-          )}/uploads/images/products/${req.file.filename}`,
+          imageUrl: `${req.protocol}://${req.get("host")}${uploadsPath}/${
+            req.file.filename
+          }`,
         }
       : {
           ...req.body,
@@ -61,8 +65,8 @@ exports.deleteProduct = (req, res) => {
   Product.findOne({ _id: req.params.id })
     .then((product) => {
       if (product.imageUrl) {
-        const filename = product.imageUrl.split("/uploads/images/products/")[1];
-        fs.unlink(`uploads/images/products/${filename}`, (err) => {
+        const filename = product.imageUrl.split(`${uploadsPath}/`)[1];
+        fs.unlink(`${process.env.UPLOADS_DIR}/${filename}`, (err) => {
           if (err) {
             throw err;
           }
@@ -84,8 +88,8 @@ exports.updateProduct = (req, res) => {
 
   Product.findOne({ _id: req.params.id }).then((product) => {
     if (req.file && product.imageUrl !== undefined) {
-      const filename = product.imageUrl.split("/uploads/images/products/")[1];
-      fs.unlink(`uploads/images/products/${filename}`, (err) => {
+      const filename = product.imageUrl.split(`${uploadsPath}/`)[1];
+      fs.unlink(`${process.env.UPLOADS_DIR}/${filename}`, (err) => {
         if (err) {
           throw err;
         }
@@ -108,9 +112,9 @@ exports.updateProduct = (req, res) => {
       ? {
           ...req.body,
           sizes: sizes,
-          imageUrl: `${req.protocol}://${req.get(
-            "host"
-          )}/uploads/images/products/${req.file.filename}`,
+          imageUrl: `${req.protocol}://${req.get("host")}${uploadsPath}/${
+            req.file.filename
+          }`,
         }
       : {
           ...req.body,
