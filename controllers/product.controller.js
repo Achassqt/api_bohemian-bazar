@@ -111,14 +111,14 @@ exports.updateProduct = (req, res) => {
     const productObject = req.file
       ? {
           ...req.body,
-          sizes: sizes,
+          sizes: req.body.sizes && sizes,
           imageUrl: `${req.protocol}://${req.get("host")}${uploadsPath}/${
             req.file.filename
           }`,
         }
       : {
           ...req.body,
-          sizes: sizes,
+          sizes: req.body.sizes && sizes,
         };
 
     Product.findOneAndUpdate(
